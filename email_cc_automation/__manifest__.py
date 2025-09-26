@@ -8,7 +8,7 @@
         It ensures important contacts are always copied on outgoing emails (Invoices, Quotations, Orders, RFQs, Shipments), with easy setup and automatic fallback rules.
     """,
     'author': 'BJIT Limited',
-    'depends': ['mail', 'account', 'accountant', 'sale', 'sale_management', 'stock', 'purchase'],
+    'depends': ['mail', 'account', 'sale', 'sale_management', 'stock', 'purchase'],
     'live_test_url': 'https://email-cc.app-odoo.bjitgroup.org/app/preview',
     'data': [
         'security/ir.model.access.csv',
