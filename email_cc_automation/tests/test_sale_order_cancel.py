@@ -15,13 +15,13 @@ class TestSaleOrderCancelWizard(TransactionCase):
         cls.order = cls.env['sale.order'].create({'partner_id': cls.customer.id, 'user_id': cls.sales_user.id})
 
     def test_cancel_default_cc_from_settings(self):
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '1')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', str(self.ccp.id))
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '1')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', str(self.ccp.id))
         wiz = self.env['sale.order.cancel'].with_context(default_order_id=self.order.id).create({})
         self.assertEqual(wiz.cc_email_partner_ids.ids, [self.ccp.id])
 
     def test_cancel_fallback_salesperson(self):
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '0')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', '')
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '0')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', '')
         wiz = self.env['sale.order.cancel'].with_context(default_order_id=self.order.id).create({})
         self.assertEqual(wiz.cc_email_partner_ids.ids, [self.sales_user.partner_id.id])

@@ -20,14 +20,14 @@ class TestValidatePickingEmailWizard(TransactionCase):
         })
 
     def test_validate_picking_default_cc_from_settings(self):
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '1')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', str(self.partner_cc.id))
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '1')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', str(self.partner_cc.id))
         wiz = self.env['validate.picking.email.wizard'].with_context(default_picking_id=self.picking.id).create({})
         self.assertEqual(wiz.cc_partner_ids.ids, [self.partner_cc.id])
 
     def test_validate_picking_fallback_user_and_existing_cc(self):
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '0')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', '')
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '0')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', '')
         # Store some next CC on picking already
         extra = self.env['res.partner'].create({'name': 'Extra', 'email': 'extra@ex.com'})
         self.picking.next_cc_partner_ids = [(6, 0, [extra.id])]

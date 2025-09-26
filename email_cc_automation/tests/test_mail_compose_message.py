@@ -17,8 +17,8 @@ class TestMailCompose(TransactionCase):
         self.order = self.env['sale.order'].create({'partner_id': self.customer.id, 'user_id': self.sales_user.id})
 
     def test_default_cc_from_settings(self):
-        self.icp.set_param('cc_email_automation.enable_custom_partner', 'true')
-        self.icp.set_param('cc_email_automation.custom_partner_ids', f"{self.cc1.id},{self.cc2.id}")
+        self.icp.set_param('email_cc_automation.enable_custom_partner', 'true')
+        self.icp.set_param('email_cc_automation.custom_partner_ids', f"{self.cc1.id},{self.cc2.id}")
         wiz = self.env['mail.compose.message'].with_context(
             default_model='sale.order',
             default_res_ids=[self.order.id],
@@ -26,8 +26,8 @@ class TestMailCompose(TransactionCase):
         self.assertEqual(set(wiz.cc_email_partner_ids.ids), {self.cc1.id, self.cc2.id})
 
     def test_fallback_salesperson_when_disabled(self):
-        self.icp.set_param('cc_email_automation.enable_custom_partner', '0')
-        self.icp.set_param('cc_email_automation.custom_partner_ids', '')
+        self.icp.set_param('email_cc_automation.enable_custom_partner', '0')
+        self.icp.set_param('email_cc_automation.custom_partner_ids', '')
         wiz = self.env['mail.compose.message'].with_context(
             default_model='sale.order',
             default_res_ids=[self.order.id],

@@ -8,8 +8,8 @@ class TestConfigSettings(TransactionCase):
         super().setUp()
         self.ICPSudo = self.env['ir.config_parameter'].sudo()
         # Ensure a clean slate for every test
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '0')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', '')
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '0')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', '')
         # Partners used in tests
         self.partner_a = self.env['res.partner'].create({'name': 'CC A', 'email': 'a@example.com'})
         self.partner_b = self.env['res.partner'].create({'name': 'CC B', 'email': 'b@example.com'})
@@ -23,7 +23,7 @@ class TestConfigSettings(TransactionCase):
         settings.execute()  # triggers set_values
 
         # Expect CSV ids param written (order-insensitive)
-        csv = self.ICPSudo.get_param('cc_email_automation.custom_partner_ids') or ''
+        csv = self.ICPSudo.get_param('email_cc_automation.custom_partner_ids') or ''
         self.assertEqual(set(map(int, csv.split(','))), {self.partner_a.id, self.partner_b.id})
 
         # Disable and clear the list
@@ -34,7 +34,7 @@ class TestConfigSettings(TransactionCase):
         settings2.execute()
 
         # Expect param cleared to empty string (not False)
-        self.assertEqual(self.ICPSudo.get_param('cc_email_automation.custom_partner_ids') or '', '')
+        self.assertEqual(self.ICPSudo.get_param('email_cc_automation.custom_partner_ids') or '', '')
 
     def test_domain_only_partners_with_email(self):
         # Partner without email should not be selectable by domain (UI-level)
@@ -47,6 +47,6 @@ class TestConfigSettings(TransactionCase):
         settings.custom_partner_ids = [(6, 0, [p.id])]
         settings.execute()
 
-        csv = self.ICPSudo.get_param('cc_email_automation.custom_partner_ids')
+        csv = self.ICPSudo.get_param('email_cc_automation.custom_partner_ids')
         # We don't enforce server-side validation here; just assert the param exists (module stable)
         self.assertIsNotNone(csv)

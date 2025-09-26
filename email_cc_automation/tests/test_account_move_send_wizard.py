@@ -10,8 +10,8 @@ class TestAccountMoveSendWizard(TransactionCase):
         super().setUpClass()
         cls.ICPSudo = cls.env['ir.config_parameter'].sudo()
         # keep config clean for deterministic behavior
-        cls.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '0')
-        cls.ICPSudo.set_param('cc_email_automation.custom_partner_ids', '')
+        cls.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '0')
+        cls.ICPSudo.set_param('email_cc_automation.custom_partner_ids', '')
 
         # CC partner
         cls.partner_cc = cls.env['res.partner'].create({'name': 'CC', 'email': 'cc@example.com'})
@@ -44,8 +44,8 @@ class TestAccountMoveSendWizard(TransactionCase):
         cls.move.action_post()
 
     def test_default_get_cc_from_settings(self):
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '1')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', str(self.partner_cc.id))
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '1')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', str(self.partner_cc.id))
         wiz = self.env['account.move.send.wizard'].with_context(
             # Odoo 18 default_get expects active_ids
             active_ids=[self.move.id]
@@ -57,8 +57,8 @@ class TestAccountMoveSendWizard(TransactionCase):
         self.assertEqual(s.get('cc_email_partner_ids'), [self.partner_cc.id])
 
     def test_default_get_cc_fallback_invoice_user(self):
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '0')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', '')
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '0')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', '')
         wiz = self.env['account.move.send.wizard'].with_context(
             active_ids=[self.move.id]
         ).create({})
@@ -66,8 +66,8 @@ class TestAccountMoveSendWizard(TransactionCase):
         self.assertEqual(wiz.cc_email_partner_ids.ids, [self.user_invoicer.partner_id.id])
 
     def test__get_mail_params_injects_email_cc(self):
-        self.ICPSudo.set_param('cc_email_automation.enable_custom_partner', '1')
-        self.ICPSudo.set_param('cc_email_automation.custom_partner_ids', str(self.partner_cc.id))
+        self.ICPSudo.set_param('email_cc_automation.enable_custom_partner', '1')
+        self.ICPSudo.set_param('email_cc_automation.custom_partner_ids', str(self.partner_cc.id))
         wiz = self.env['account.move.send.wizard'].with_context(
             active_ids=[self.move.id]
         ).create({})
